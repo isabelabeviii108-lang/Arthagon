@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Universo Arthagon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cinzel+Decorative:wght@400;700;900&family=Lato:wght@300;400;700&family=MedievalSharp&display=swap" rel="stylesheet">
+    <script>
+      // Polyfill for process.env to prevent runtime errors
+      window.process = {
+        env: {
+          NODE_ENV: 'development',
+          API_KEY: '' // Safe default
+        }
+      };
+      
+      tailwind.config = {
+        darkMode: 'class', // Enable class-based dark mode
+        theme: {
+          extend: {
+            fontFamily: {
+              cinzel: ['Cinzel', 'serif'],
+              decorative: ['Cinzel Decorative', 'cursive'],
+              body: ['Lato', 'sans-serif'],
+              medieval: ['MedievalSharp', 'cursive'],
+            },
+            colors: {
+              arthagon: {
+                // Dark Mode Colors
+                black: '#050505',
+                dark: '#0a0a0a',
+                charcoal: '#121212',
+                
+                // Light Mode Colors (Parchment Theme)
+                paper: '#f2e8cf', // Cream/Parchment
+                parchment: '#e6dcc0', // Darker parchment for cards
+                ink: '#2b2118', // Dark Brown/Black for text
+                
+                // Accents
+                gold: '#c5a059', 
+                'gold-dim': '#8a6e36',
+                'gold-light': '#e8d5a7',
+                silver: '#a8a8a8',
+                accent: '#8b0000',
+              }
+            },
+            backgroundImage: {
+              'noise': "url('https://www.transparenttextures.com/patterns/stardust.png')", 
+              'vignette': 'radial-gradient(circle, transparent 20%, #050505 130%)',
+              'vignette-light': 'radial-gradient(circle, transparent 20%, #f2e8cf 130%)',
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'pulse-blue': 'pulse-blue 3s ease-in-out infinite',
+              'fog-flow': 'fogFlow 60s linear infinite',
+              'particle-rise': 'particleRise 20s linear infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              'pulse-blue': {
+                '0%, 100%': { boxShadow: '0 0 25px rgba(88,101,242,0.6)', transform: 'scale(1)' },
+                '50%': { boxShadow: '0 0 50px rgba(88,101,242,0.9)', transform: 'scale(1.03)' },
+              },
+              fogFlow: {
+                '0%': { transform: 'translateX(-10%)' },
+                '100%': { transform: 'translateX(10%)' },
+              },
+              particleRise: {
+                '0%': { transform: 'translateY(110vh) translateX(-10px)', opacity: '0' },
+                '10%': { opacity: '1' },
+                '90%': { opacity: '1' },
+                '100%': { transform: 'translateY(-20vh) translateX(10px)', opacity: '0' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Base Theme Styles */
+      body {
+        transition: background-color 0.5s ease, color 0.5s ease;
+        overflow-x: hidden;
+        /* Custom Gold Cursor */
+        cursor: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMiAyTDEwLjUgMjJMMTMgMTNMMjIgMTAuNUwyIDJaIiBmaWxsPSIjYzVhMDU5IiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEuNSIvPjwvc3ZnPg=='), auto;
+      }
+      
+      /* Dark Mode (Default) */
+      html.dark body {
+        background-color: #030303;
+        color: #d4d4d4;
+      }
+
+      /* Light Mode */
+      html:not(.dark) body {
+        background-color: #f2e8cf; /* Arthagon Paper */
+        color: #2b2118; /* Arthagon Ink */
+      }
+      
+      a, button {
+        cursor: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI4IiBzdHJva2U9IiNjNWEwNTkiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0icmdiYSwxOTcsIDE2MCwgODksIDAuMikiLz48cGF0aCBkPSZNMTIgNFYyME00IDEySDIwIiBzdHJva2U9IiNjNWEwNTkiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg=='), pointer;
+      }
+
+      /* Noise Overlay Class */
+      .bg-noise-texture {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.07;
+        mix-blend-mode: overlay;
+      }
+      
+      /* Light mode noise adjustment */
+      html:not(.dark) .bg-noise-texture {
+        opacity: 0.03;
+        mix-blend-mode: multiply;
+      }
+
+      /* METALLIC TYPOGRAPHY - The Gold Standard */
+      .text-metallic {
+        background: linear-gradient(to bottom, #fbf5b7 0%, #bf953f 40%, #b38728 60%, #fbf5b7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+        position: relative;
+      }
+      
+      /* Light Mode Metallic - darker gold/bronze for visibility */
+      html:not(.dark) .text-metallic {
+        background: linear-gradient(to bottom, #8a6e36 0%, #bf953f 40%, #8a6e36 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+      }
+
+      /* GRITTY GLASSMORPHISM CARD - REFINED */
+      .glass-card {
+        /* Dark Mode Default */
+        background: linear-gradient(145deg, rgba(15, 15, 15, 0.8) 0%, rgba(5, 5, 5, 0.9) 100%);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(197, 160, 89, 0.1);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      /* Light Mode Glass/Paper Card */
+      html:not(.dark) .glass-card {
+        background: linear-gradient(145deg, rgba(242, 232, 207, 0.9) 0%, rgba(230, 220, 192, 0.95) 100%);
+        border: 1px solid rgba(197, 160, 89, 0.3);
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px 0 rgba(197, 160, 89, 0.15);
+        color: #2b2118;
+      }
+
+      .glass-card:hover {
+        /* Dark hover */
+        border-color: rgba(197, 160, 89, 0.4);
+        border-top-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 20px rgba(197, 160, 89, 0.1);
+        background: linear-gradient(145deg, rgba(20, 20, 20, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
+      }
+      
+      html:not(.dark) .glass-card:hover {
+        /* Light hover */
+        border-color: rgba(197, 160, 89, 0.6);
+        background: linear-gradient(145deg, #f9f4e6 0%, #ece4cb 100%);
+        box-shadow: 0 20px 50px rgba(197, 160, 89, 0.2), 0 0 10px rgba(197, 160, 89, 0.1);
+      }
+
+      /* Noise inside card */
+      .glass-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        mix-blend-mode: overlay;
+        opacity: 0.4;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ORNAMENTAL DIVIDER */
+      .divider-ornamental {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin: 4rem 0;
+        opacity: 0.6;
+      }
+      .divider-ornamental::before {
+        content: '';
+        height: 1px;
+        width: 40%;
+        background: linear-gradient(90deg, transparent, #c5a059);
+      }
+      .divider-ornamental::after {
+        content: '';
+        height: 1px;
+        width: 40%;
+        background: linear-gradient(90deg, #c5a059, transparent);
+      }
+      .divider-diamond {
+        width: 12px;
+        height: 12px;
+        background: #050505;
+        border: 1px solid #c5a059;
+        transform: rotate(45deg);
+        margin: 0 1rem;
+        box-shadow: 0 0 10px #c5a059;
+      }
+      html:not(.dark) .divider-diamond {
+          background: #f2e8cf;
+      }
+
+      /* Drop Cap Style - Enhanced */
+      .drop-cap {
+        float: left;
+        font-family: 'Cinzel Decorative', cursive;
+        font-size: 5.5rem;
+        line-height: 0.8;
+        margin-right: 1.2rem;
+        margin-top: 0.2rem;
+        color: #c5a059;
+        text-shadow: 0 2px 10px rgba(197, 160, 89, 0.3);
+        background: linear-gradient(to bottom, #fff 0%, #c5a059 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      html:not(.dark) .drop-cap {
+         background: linear-gradient(to bottom, #8a6e36 0%, #bf953f 100%);
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+         text-shadow: none;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #050505; 
+      }
+      html:not(.dark) ::-webkit-scrollbar-track {
+        background: #e6dcc0;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, #333, #555); 
+        border-radius: 4px;
+        border: 1px solid #050505;
+      }
+      html:not(.dark) ::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, #c5a059, #8a6e36);
+        border: 1px solid #e6dcc0;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #c5a059; 
+        box-shadow: 0 0 15px #c5a059;
+      }
+      
+      ::selection {
+        background: #8b0000;
+        color: #fff;
+        text-shadow: 0 0 5px rgba(255,255,255,0.5);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "@google/genai": "https://esm.run/@google/genai"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
